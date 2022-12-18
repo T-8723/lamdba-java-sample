@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lamdbaノウハウ.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="lambda%E3%83%8E%E3%82%A6%E3%83%8F%E3%82%A6">Lambdaノウハウ</h1>
+<h2 id="lambda-%E3%81%AB%E3%81%8A%E3%81%84%E3%81%A6%E3%83%A9%E3%83%B3%E3%82%BF%E3%82%A4%E3%83%A0%E3%81%AB-java-%E3%82%92%E9%81%B8%E6%8A%9E%E3%81%97%E3%81%9F%E5%A0%B4%E5%90%88%E3%81%AE%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E6%89%8B%E9%A0%86">Lambda においてランタイムに Java を選択した場合のデプロイ手順</h2>
+<h3 id="%E8%83%8C%E6%99%AF%E7%9B%AE%E7%9A%84">背景、目的</h3>
+<p>業務で Lambda+Java の環境での開発を行いましたが、Java での開発は初めて+Lambda も初めての初心者状態からの試行で色々躓きました。</p>
+<p>AWS の各機能についてはだいたいが公式のリファレンスを置いているのでわかる方には不要かと思いますが、自分のように「Java も Lambda も初心者がとりあえず最速で動かしたい」といった場合に、他の方の参考資料や自分の備忘録として残しておこうと思い作成しています。</p>
+<p>最低限動作させるところが目的で、細かい設定などは省略しています。</p>
+<p>通常、この手の話はネット上ですぐ出てくるのですが、今回の組み合わせで適当なレベル感のものは見当たらず…</p>
+<p>Python や NodeJS はコンソール上で手軽に試行できるようになっているため、Lambda において使用されるランタイムとしてはネット上では Python や NodeJS が主流で、比較的 Java を使用した例は少なく、ネット上の記事を見ても、Java を使用した解説などは少ないようです。</p>
+<p>最終的には API GateWayと接続するLambda 関数の作成について記載していきます。</p>
+<h3 id="%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6">前提条件</h3>
+<ul>
+<li>AWS にログインできる</li>
+<li>Lambda の作成ができる権限がある</li>
+</ul>
+<h3 id="%E9%96%A2%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4%E3%81%BE%E3%81%A7%E3%81%AE%E6%B5%81%E3%82%8C">関数の作成～デプロイまでの流れ</h3>
+<ol>
+<li>関数の作成</li>
+<li>ローカル環境構築
+<ol>
+<li>Java のインストール</li>
+<li>Gradle のインストール</li>
+<li>Lambda で実行できる構成の構築</li>
+<li>ビルド</li>
+</ol>
+</li>
+<li>デプロイ</li>
+</ol>
+<h3 id="1-%E9%96%A2%E6%95%B0%E3%81%AE%E4%BD%9C%E6%88%90">1. 関数の作成</h3>
+<ul>
+<li>Lambda、関数の作成ボタンから作成画面を開く
+<ul>
+<li>ランタイムはJava11を選択</li>
+<li>「関数の作成」を押下</li>
+</ul>
+</li>
+<li>確認</li>
+</ul>
+<p>Lambda、関数の作成ボタンから作成画面を開く<br>
+<img src="./img/01_関数の作成_01.png" alt="01_関数の作成"></p>
+<p>ランタイムはJava11を選択<br>
+<img src="./img/01_関数の作成_02.png" alt="02_関数の作成"></p>
+<p>「関数の作成」を押下<br>
+<img src="./img/01_関数の作成_03.png" alt="03_関数の作成"></p>
+<p>確認
+<img src="./img/01_関数の作成_04.png" alt="04_関数の作成"></p>
+<h3 id="2-%E3%83%AD%E3%83%BC%E3%82%AB%E3%83%AB%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89">2. ローカル環境構築</h3>
+<h4 id="2-1-java-%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">2-1 Java のインストール</h4>
+<ul>
+<li><a href="https://jdk.java.net/java-se-ri/11">OpenJDK_11</a>のダウンロード</li>
+<li>インストール
+<ul>
+<li>配置・解凍</li>
+<li>パス設定</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://jdk.java.net/java-se-ri/11">OpenJDK_11</a>のダウンロード<br>
+<img src="./img/02_OpenJDK_11のダウンロード_01.png" alt="02_OpenJDK_11のダウンロード_01"></p>
+<h4 id="2-2-gradle-%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB">2-2 Gradle のインストール</h4>
+<ul>
+<li><a href="https://gradle.org/install/">Gradle</a>のダウンロード</li>
+<li>インストール
+<ul>
+<li>配置・解凍</li>
+<li>パス設定</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://gradle.org/install/">Gradle</a>のダウンロード
+<img src="./img/03_Gradleのダウンロード_01.png" alt="03_OpenJDK_11のダウンロード_01"><br>
+<img src="./img/03_Gradleのダウンロード_02.png" alt="03_OpenJDK_11のダウンロード_02"></p>
+<h4 id="2-3-lambda-%E3%81%A7%E5%AE%9F%E8%A1%8C%E3%81%A7%E3%81%8D%E3%82%8B%E6%A7%8B%E6%88%90%E3%81%AE%E6%A7%8B%E7%AF%89">2-3 Lambda で実行できる構成の構築</h4>
+<ul>
+<li>
+<p>Handler設定</p>
+<ul>
+<li>Lambda としてコードを起動させるためには、HandlerクラスにhandleRequest関数を実装する必要があります。</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-comment">/**
+
+- Lambda ハンドラークラス.
+*/</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SampleHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">RequestHandler</span>&lt;<span class="hljs-title">Map</span>&lt;<span class="hljs-title">String</span>, <span class="hljs-title">Object</span>&gt;, <span class="hljs-title">Object</span>&gt; </span>{
+
+  <span class="hljs-comment">/**
+
+- Lambda Function メイン関数.
+*
+- <span class="hljs-doctag">@param</span> event         APIGatewayイベント情報
+- <span class="hljs-doctag">@param</span> lambdaContext トリガー発火時に渡されたJSONデータ内情報
+- <span class="hljs-doctag">@return</span> 処理結果
+  */</span>
+  <span class="hljs-meta">@Override</span>
+  <span class="hljs-function"><span class="hljs-keyword">public</span> Object <span class="hljs-title">handleRequest</span><span class="hljs-params">(Map&lt;String, Object&gt; event, Context lambdaContext)</span> </span>{
+  ..........(処理内容)...........
+  }
+}
+</div></code></pre>
+<ul>
+<li>このとき、Lambda 上のハンドラー設定とJavaパッケージの階層を合わせる必要があります。<br>
+この場合、/sample_project/src/main/javaの下から <strong>/sample/SampleHandler</strong> の <strong>handleRequest</strong> を呼び出すように修正します。</li>
+<li>ハンドラー設定
+<ul>
+<li>「編集」を押下
+<img src="./img/05_Handler変更_01.png" alt="05_Handler変更_01"></li>
+<li>「ハンドラ」項目の変更
+<img src="./img/05_Handler変更_02.png" alt="05_Handler変更_02"></li>
+<li><strong>sample.SampleHandler::handleRequest</strong> に変更、保存を押下
+<img src="./img/05_Handler変更_03.png" alt="05_Handler変更_03"></li>
+<li>確認
+<img src="./img/05_Handler変更_04.png" alt="05_Handler変更_04"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>ビルド設定</p>
+<ul>
+<li>build.gradleファイルにzipファイル圧縮の設定を記載します。</li>
+</ul>
+<pre class="hljs"><code><div>  <span class="hljs-keyword">task</span> buildZip(type: Zip) {
+      <span class="hljs-keyword">from</span> compileJava
+      tasks.withType(JavaCompile) {
+      <span class="hljs-keyword">options</span>.encoding = <span class="hljs-string">'UTF-8'</span>
+      }
+      <span class="hljs-keyword">from</span> processResources
+      <span class="hljs-keyword">into</span>(<span class="hljs-string">'lib'</span>) {
+          <span class="hljs-keyword">from</span> <span class="hljs-keyword">configurations</span>.runtimeClasspath
+      }
+  }
+
+  .........
+  
+  build.dependsOn buildZip
+</div></code></pre>
+</li>
+<li>
+<p>サンプル</p>
+<ul>
+<li>サンプルのリポジトリは ../sample_project 以下に配置しています。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-4-%E3%83%93%E3%83%AB%E3%83%89">2-4 ビルド</h4>
+<ul>
+<li>コマンド実行
+<ul>
+<li>ルートディレクトリで <code>gradle.build</code> を実行します。
+<img src="./img/04_ビルド結果.png" alt="04_ビルド結果"></li>
+</ul>
+</li>
+<li>ファイル確認
+<ul>
+<li>下記のファイルが生成されている</li>
+<li>/sample_project/build/distributions/sample_project.zip</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4">3. デプロイ</h3>
+<ul>
+<li>ビルドしたzipファイルをアップロードします。
+<ul>
+<li>「アップロード元」を押下<br>
+<img src="./img/06_デプロイ_01.png" alt="06_デプロイ_01"></li>
+<li>「zipまたはjarファイル」を押下<br>
+<img src="./img/06_デプロイ_02.png" alt="06_デプロイ_02"></li>
+<li>「アップロード」を押下<br>
+<img src="./img/06_デプロイ_03.png" alt="06_デプロイ_03"></li>
+<li>ビルドしたsample_project.zipを選択し、「保存」を押下<br>
+<img src="./img/06_デプロイ_04.png" alt="06_デプロイ_04"></li>
+<li>ビルド後、テストして確認する<br>
+<img src="./img/06_デプロイ_05.png" alt="06_デプロイ_05">
+<img src="./img/06_デプロイ_06.png" alt="06_デプロイ_06"></li>
+</ul>
+</li>
+</ul>
+<h2 id="api-gateway%E3%81%A8%E3%81%AE%E6%8E%A5%E7%B6%9A">API Gatewayとの接続</h2>
+<h3 id="api-%E3%81%AE%E4%BD%9C%E6%88%90">API の作成</h3>
+<ul>
+<li>API Gatewayから「REST API」を押下<br>
+<img src="./img/07_APIの作成_01.png" alt="07_APIの作成_01"><br>
+<img src="./img/07_APIの作成_02.png" alt="07_APIの作成_02"></li>
+<li>APIの作成が初めての場合はダイアログが表示されるため「OK」を押下
+<img src="./img/07_APIの作成_03.png" alt="07_APIの作成_03"></li>
+<li>「新しいAPI」を押下
+<img src="./img/07_APIの作成_04.png" alt="07_APIの作成_04"></li>
+<li>「API名」を入力し「APIの作成」を押下
+<img src="./img/07_APIの作成_05.png" alt="07_APIの作成_05"></li>
+<li>確認
+<img src="./img/07_APIの作成_06.png" alt="07_APIの作成_06"></li>
+</ul>
+<h3 id="%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9-%E3%81%AE%E4%BD%9C%E6%88%90">リソース の作成</h3>
+<ul>
+<li>アクションから「リソースの作成」を押下<br>
+<img src="./img/08_リソースの作成_01.png" alt="08_リソースの作成_01"></li>
+<li>「リソース名」を入力し「リソースの作成」を押下<br>
+<img src="./img/08_リソースの作成_02.png" alt="08_リソースの作成_02"></li>
+<li>確認<br>
+<img src="./img/08_リソースの作成_03.png" alt="08_リソースの作成_03"></li>
+</ul>
+<p>作成したいAPIの構成によっては繰り返しリソースを作成します。</p>
+<h3 id="%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89-%E3%81%AE%E4%BD%9C%E6%88%90">メソッド の作成</h3>
+<ul>
+<li>アクションから「メソッドの作成」を押下<br>
+<img src="./img/09_メソッドの作成_01.png" alt="09_メソッドの作成_01">
+<img src="./img/09_メソッドの作成_02.png" alt="09_メソッドの作成_02"></li>
+<li>メソッドの種類を選択します。<br>
+<img src="./img/09_メソッドの作成_03.png" alt="09_メソッドの作成_03">
+<img src="./img/09_メソッドの作成_04.png" alt="09_メソッドの作成_04"></li>
+<li>「結合タイプ」を「Lambda関数」、「Lambdaプロキシ統合の使用」を有効化します。※<br>
+<img src="./img/09_メソッドの作成_05.png" alt="09_メソッドの作成_05"></li>
+<li>「Lambda関数」で先ほどアップロードしたLambda関数を選択します。
+<img src="./img/09_メソッドの作成_06.png" alt="09_メソッドの作成_06">
+<img src="./img/09_メソッドの作成_07.png" alt="09_メソッドの作成_07"></li>
+<li>権限の付与を許可します。
+<img src="./img/09_メソッドの作成_08.png" alt="09_メソッドの作成_08"></li>
+<li>確認
+<img src="./img/09_メソッドの作成_09.png" alt="09_メソッドの作成_09"></li>
+</ul>
+<p>※このとき、選択する Lambda 関数のレスポンス型は<code>APIGatewayProxyResponseEvent</code>に適合する型である必要があります。（Sampleを参照）</p>
+<h3 id="%E3%82%B9%E3%83%86%E3%83%BC%E3%82%B8%E3%81%AE%E4%BD%9C%E6%88%90%E3%83%87%E3%83%97%E3%83%AD%E3%82%A4">ステージの作成（デプロイ）</h3>
+<ul>
+<li>アクションから「APIのデプロイ」を押下<br>
+<img src="./img/10_APIのデプロイ_01.png" alt="10_APIのデプロイ_01">
+<img src="./img/10_APIのデプロイ_02.png" alt="10_APIのデプロイ_02"></li>
+<li>「デプロイするステージ」を選択（ステージ未作成のため「新しいステージ」を選択）<br>
+<img src="./img/10_APIのデプロイ_03.png" alt="10_APIのデプロイ_03"></li>
+<li>「ステージ名」を入力、「デプロイ」を押下
+<img src="./img/10_APIのデプロイ_04.png" alt="10_APIのデプロイ_04"></li>
+<li>確認
+<img src="./img/10_APIのデプロイ_05.png" alt="10_APIのデプロイ_05">
+<img src="./img/10_APIのデプロイ_06.png" alt="10_APIのデプロイ_06">
+<img src="./img/10_APIのデプロイ_07.png" alt="10_APIのデプロイ_07"></li>
+</ul>
+
+</body>
+</html>
